@@ -409,7 +409,7 @@ textarea.input{min-height:128px;resize:vertical}
         <p>Napište mi krátce, o jakou situaci jde nebo mi zavolejte. Na úvodním rozhovoru společně zvážíme, jestli a jak vám mohu být užitečný.</p>
       </div>
       <div class="contact-links">
-        <a href="mailto:Vladimir@Jicinsky.cz">kontext@JicinskyVladimir.cz</a>
+        <a href="mailto:kontext@JicinskyVladimir.cz">kontext@JicinskyVladimir.cz</a>
         <a href="tel:+420602158759">+420 602 158 759</a>
       </div>
     </div>
@@ -435,7 +435,7 @@ textarea.input{min-height:128px;resize:vertical}
 <footer class="site-footer">
   <div class="wrap">
     <span>Mgr. Vladimír Jičínský · psycholog, kouč, konzultant interní komunikace</span>
-    <a href="mailto:Vladimir@Jicinsky.cz">Vladimir@Jicinsky.cz</a>
+    <a href="mailto:kontext@JicinskyVladimir.cz">kontext@JicinskyVladimir.cz</a>
   </div>
 </footer>
 
@@ -473,8 +473,8 @@ textarea.input{min-height:128px;resize:vertical}
     if(bad.length){bad.forEach(function(f){f.setAttribute('aria-invalid','true');});bad[0].focus();status.textContent='Vyplňte prosím jméno, platný e-mail a zprávu.';return;}
     var v=function(n){return form.elements[n].value.trim();};
     var body='Jméno: '+v('jmeno')+'\nE-mail: '+v('email')+(v('telefon')?'\nTelefon: '+v('telefon'):'')+'\nTéma: '+v('tema')+'\n\n'+v('zprava');
-    window.location.href='mailto:Vladimir@Jicinsky.cz?subject='+encodeURIComponent('Dotaz z webu – '+v('tema'))+'&body='+encodeURIComponent(body);
-    status.textContent='Otevírám váš e-mailový program se připravenou zprávou. Pokud se neotevře, napište prosím přímo na Vladimir@Jicinsky.cz.';
+    window.location.href='mailto:kontext@JicinskyVladimir.cz?subject='+encodeURIComponent('Dotaz z webu – '+v('tema'))+'&body='+encodeURIComponent(body);
+    status.textContent='Otevírám váš e-mailový program se připravenou zprávou. Pokud se neotevře, napište prosím přímo na kontext@JicinskyVladimir.cz.';
   });
 })();
 </script>
