@@ -168,7 +168,9 @@ textarea.input{min-height:128px;resize:vertical}
 .input[aria-invalid="true"]{border-color:#aa0b56}
 .form-foot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s4) var(--s5);margin-top:var(--s5)}
 .form-foot small{font-size:var(--fs-small);line-height:1.5;color:var(--n700);max-width:52ch}
+.form{position:relative}
 .form-status{margin-top:var(--s3);font-size:var(--fs-small);color:var(--a800)}
+.btn:disabled{opacity:.6;cursor:progress}
 
 .site-footer{margin-top:var(--section);padding:var(--s6) 0 calc(var(--s6) + env(safe-area-inset-bottom));border-top:1px solid var(--divider);font-size:var(--fs-small);color:var(--n700)}
 .site-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s2) var(--s5)}
@@ -416,6 +418,7 @@ textarea.input{min-height:128px;resize:vertical}
 
     <form class="form" id="contact-form" novalidate>
       <p class="label">Napište mi</p>
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
       <div class="form-grid">
         <div class="field"><label for="f-jmeno">Jméno</label><input class="input" id="f-jmeno" name="jmeno" type="text" autocomplete="name" placeholder="Jana Nováková" required></div>
         <div class="field"><label for="f-email">E-mail</label><input class="input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="jana@firma.cz" required></div>
@@ -435,7 +438,7 @@ textarea.input{min-height:128px;resize:vertical}
 <footer class="site-footer">
   <div class="wrap">
     <span>Mgr. Vladimír Jičínský · psycholog, kouč, konzultant interní komunikace</span>
-    <a href="mailto:kontext@JicinskyVladimir.cz">kontext@JicinskyVladimir.cz</a>
+    <span>Palác Padowetz, Masarykova 413/34, 602 00 Brno, 1. patro, místnost 111</span>
   </div>
 </footer>
 
@@ -465,6 +468,8 @@ textarea.input{min-height:128px;resize:vertical}
     a.addEventListener('click',function(){topic.value=a.getAttribute('data-topic');});
   });
 
+  /* Web3Forms: vložte svůj Access Key z https://web3forms.com (zdarma). Dokud je prázdný, formulář otevře e-mailový program. */
+  var WEB3FORMS_KEY='ac1ef45f-38ed-4d50-b54c-66e3534cf9e1';
   var form=document.getElementById('contact-form'),status=document.getElementById('form-status');
   form.addEventListener('submit',function(e){
     e.preventDefault();
@@ -473,8 +478,23 @@ textarea.input{min-height:128px;resize:vertical}
     if(bad.length){bad.forEach(function(f){f.setAttribute('aria-invalid','true');});bad[0].focus();status.textContent='Vyplňte prosím jméno, platný e-mail a zprávu.';return;}
     var v=function(n){return form.elements[n].value.trim();};
     var body='Jméno: '+v('jmeno')+'\nE-mail: '+v('email')+(v('telefon')?'\nTelefon: '+v('telefon'):'')+'\nTéma: '+v('tema')+'\n\n'+v('zprava');
-    window.location.href='mailto:kontext@JicinskyVladimir.cz?subject='+encodeURIComponent('Dotaz z webu – '+v('tema'))+'&body='+encodeURIComponent(body);
-    status.textContent='Otevírám váš e-mailový program se připravenou zprávou. Pokud se neotevře, napište prosím přímo na kontext@JicinskyVladimir.cz.';
+    if(form.elements.botcheck&&form.elements.botcheck.checked)return;
+    if(!WEB3FORMS_KEY){
+      window.location.href='mailto:kontext@JicinskyVladimir.cz?subject='+encodeURIComponent('Dotaz z webu – '+v('tema'))+'&body='+encodeURIComponent(body);
+      status.textContent='Otevírám váš e-mailový program se připravenou zprávou. Pokud se neotevře, napište prosím přímo na kontext@JicinskyVladimir.cz.';
+      return;
+    }
+    var submit=form.querySelector('button[type="submit"]'),label=submit.textContent;
+    submit.disabled=true;submit.textContent='Odesílám…';status.textContent='';
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
+      access_key:WEB3FORMS_KEY,subject:'Dotaz z webu – '+v('tema'),from_name:'Web Vladimír Jičínský',
+      name:v('jmeno'),email:v('email'),replyto:v('email'),telefon:v('telefon')||'—',tema:v('tema'),message:v('zprava')
+    })}).then(function(r){return r.json();}).then(function(d){
+      if(!d.success)throw new Error(d.message);
+      form.reset();status.textContent='Děkuji, zpráva byla odeslána. Ozvu se vám obvykle do dvou pracovních dnů.';
+    }).catch(function(){
+      status.textContent='Zprávu se nepodařilo odeslat. Napište prosím přímo na kontext@JicinskyVladimir.cz nebo zavolejte na +420 602 158 759.';
+    }).finally(function(){submit.disabled=false;submit.textContent=label;});
   });
 })();
 </script>
